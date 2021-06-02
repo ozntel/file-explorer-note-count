@@ -3,6 +3,7 @@ import { Plugin } from 'obsidian';
 export default class FileExplorerNoteCount extends Plugin {
 
 	async onload() {
+		this.updateFolderNumbers();
 		this.app.metadataCache.on('resolved', this.updateFolderNumbers);
 		this.registerDomEvent(document, 'click', this.updateFolderNumbers);
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
