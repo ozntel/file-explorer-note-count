@@ -43,14 +43,10 @@ export default class FileExplorerNoteCount extends Plugin {
 			const isCollapsed = folderTitleNode.parentElement.className.includes('is-collapsed');
 
 			// Check if has Child Ffolder
-			var hasChildFolder = false;
 			var childRegex = new RegExp(currentDataPath + '/.*/.*')
-			for (let mdNote of mdNotes) {
-				if (mdNote.path.match(childRegex)) {
-					hasChildFolder = true;
-					break;
-				}
-			}
+			var hasChildFolder = mdNotes.some(mdNote => {
+				return mdNote.path.match(childRegex);
+			})
 
 			if (isCollapsed || (!isCollapsed && !hasChildFolder)) {
 				numberDiv.innerText = filteredNotes.length.toString();
