@@ -17,19 +17,18 @@ export default class FileExplorerNoteCount extends Plugin {
 		await this.loadSettings();
 		if (!this.settings.showAllNumbers) this.loadStyle();
 		this.updateFolderNumbers();
-		this.app.metadataCache.on('resolved', this.updateFolderNumbers);
-		this.app.vault.on('create', this.updateFolderNumbers);
-		this.app.vault.on('rename', this.updateFolderNumbers);
-		this.app.vault.on('delete', this.updateFolderNumbers);
+		this.registerEvent(
+      this.app.metadataCache.on('resolved', this.updateFolderNumbers),
+    );
+		this.registerEvent(this.app.vault.on('create', this.updateFolderNumbers));
+		this.registerEvent(this.app.vault.on('rename', this.updateFolderNumbers));
+		this.registerEvent(this.app.vault.on('delete', this.updateFolderNumbers));
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
 		clearInsertedNumbers();
 		console.log('unloading plugin');
-		this.app.vault.off('create', this.updateFolderNumbers);
-		this.app.vault.off('rename', this.updateFolderNumbers);
-		this.app.vault.off('delete', this.updateFolderNumbers);
 		this.unloadStyle();
 	}
 
