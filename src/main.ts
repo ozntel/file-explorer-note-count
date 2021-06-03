@@ -1,4 +1,5 @@
 import { Plugin, PluginSettingTab, App, Setting } from 'obsidian';
+import './main.css'
 
 interface FileExplorerNoteCountSettings {
 	showAllNumbers: boolean,
