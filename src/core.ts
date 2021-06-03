@@ -11,7 +11,7 @@ export function updateFolderNumbers(app: App) {
   clearInsertedNumbers();
 
   // Get All Available Notes under Vault
-  var mdNotes = app.vault.getMarkdownFiles();
+  let mdNotes = app.vault.getMarkdownFiles();
 
   // Create Folder File Map
   const counts: { [key: string]: number } = {};
@@ -22,24 +22,24 @@ export function updateFolderNumbers(app: App) {
   });
 
   // Loop Through File Explorer Elements
-  var fileExplorers = app.workspace.getLeavesOfType('file-explorer');
+  let fileExplorers = app.workspace.getLeavesOfType('file-explorer');
 
   for (let fileExplorer of fileExplorers) {
     // @ts-ignore
     for (const [key, value] of Object.entries(fileExplorer.view.fileItems)) {
       if (value.titleEl.className === 'nav-folder-title') {
         // Get the Title Node
-        var folderTitleNode: HTMLElement = value.titleEl;
+        let folderTitleNode: HTMLElement = value.titleEl;
 
         // Get Path of Folder Title
-        var currentDataPath = folderTitleNode.getAttr('data-path');
+        let currentDataPath = folderTitleNode.getAttr('data-path');
 
         // No number for the Vault Main Folder
         if (currentDataPath === '/') continue;
 
         // Add Number of Notes
         if (counts[currentDataPath]) {
-          var folderCount = folderTitleNode.createDiv({
+          let folderCount = folderTitleNode.createDiv({
             cls: 'oz-folder-numbers',
             text: counts[currentDataPath].toString(),
           });

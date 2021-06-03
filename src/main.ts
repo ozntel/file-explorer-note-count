@@ -5,8 +5,8 @@ import { clearInsertedNumbers, updateFolderNumbers } from './core';
 
 export default class FileExplorerNoteCount extends Plugin {
 
-	settings: FileExplorerNoteCountSettings;
-	loadedStyles: Array<HTMLStyleElement>;
+	settings = DEFAULT_SETTINGS;
+	loadedStyles: HTMLStyleElement[] = [];
 
 	updateFolderNumbers = () => {
     updateFolderNumbers(this.app);
@@ -34,7 +34,7 @@ export default class FileExplorerNoteCount extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = { ...this.settings, ...(await this.loadData()) };
 	}
 
 	async saveSettings() {
@@ -44,8 +44,8 @@ export default class FileExplorerNoteCount extends Plugin {
 	// Style Settings
 
 	loadStyle = () => {
-		this.loadedStyles = Array<HTMLStyleElement>(0);
-		var style = document.createElement("style");
+		this.loadedStyles.length = 0;
+		let style = document.createElement("style");
 		style.innerHTML = collapseStyle;
 		document.head.appendChild(style);
 		this.loadedStyles.push(style);
@@ -55,7 +55,7 @@ export default class FileExplorerNoteCount extends Plugin {
 		for (let style of this.loadedStyles) {
 			document.head.removeChild(style);
 		}
-		this.loadedStyles = Array<HTMLStyleElement>(0);
+		this.loadedStyles.length = 0;
 	}
 
 	handleStyleToggle = (newStyle: boolean) => {
