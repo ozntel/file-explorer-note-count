@@ -1,35 +1,66 @@
-import { Plugin } from 'obsidian';
-import { DEFAULT_SETTINGS, FileExplorerNoteCountSettings, FileExplorerNoteCountSettingsTab } from './settings';
+import { FileExplorer, Plugin } from 'obsidian';
+import { DEFAULT_SETTINGS, FileExplorerNoteCountSettingsTab } from './settings';
 import './main.css'
-import { clearInsertedNumbers, updateFolderNumbers } from './core';
+import { setupCount, updateCount } from './folder-count';
+import { dirname } from 'path';
 
 export default class FileExplorerNoteCount extends Plugin {
 
 	settings = DEFAULT_SETTINGS;
 	loadedStyles: HTMLStyleElement[] = [];
 
-	updateFolderNumbers = () => {
-    updateFolderNumbers(this.app);
+	fileExplorer?: FileExplorer;
+
+  registerVaultEvent() {
+    // attach events on new folder
+    this.registerEvent(
+      this.app.vault.on('create', (af) => {
+        updateCount(af, this);
+      }),
+    );
+    // include mv and rename
+    this.registerEvent(
+      this.app.vault.on('rename', (af, oldPath) => {
+        // when file is moved
+        if (dirname(af.path) !== dirname(oldPath)) {
+          updateCount(af, this);
+          updateCount(oldPath, this);
+        }
+      }),
+    );
+    this.registerEvent(
+      this.app.vault.on('delete', (af) => {
+        updateCount(af, this);
+      }),
+    );
+  }
+
+	initialize = (revert = false) => {
+    const leaves = this.app.workspace.getLeavesOfType('file-explorer');
+    if (leaves.length > 1) console.error('more then one file-explorer');
+    else if (leaves.length < 1) console.error('file-explorer not found');
+    else {
+			if (this.fileExplorer) this.fileExplorer = leaves[0].view as FileExplorer;
+			setupCount(this, revert);
+      if (!revert) this.registerVaultEvent();
+    }
+		
   };
 
 	async onload() {
+		console.log('loading FileExplorerNoteCount');
 		this.addSettingTab(new FileExplorerNoteCountSettingsTab(this.app, this));
 		await this.loadSettings();
-		if (!this.settings.showAllNumbers) this.loadStyle();
-		this.updateFolderNumbers();
-		this.registerEvent(
-      this.app.metadataCache.on('resolved', this.updateFolderNumbers),
-    );
-		this.registerEvent(this.app.vault.on('create', this.updateFolderNumbers));
-		this.registerEvent(this.app.vault.on('rename', this.updateFolderNumbers));
-		this.registerEvent(this.app.vault.on('delete', this.updateFolderNumbers));
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		if (this.app.workspace.layoutReady) this.initialize();
+    else
+      this.registerEvent(
+        this.app.workspace.on("layout-ready", this.initialize),
+      );
 	}
 
 	onunload() {
-		clearInsertedNumbers();
-		console.log('unloading plugin');
-		this.unloadStyle();
+		console.log('unloading FileExplorerNoteCount');
+		this.initialize(true);
 	}
 
 	async loadSettings() {
@@ -39,40 +70,4 @@ export default class FileExplorerNoteCount extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
-
-	// Style Settings
-
-	loadStyle = () => {
-		this.loadedStyles.length = 0;
-		let style = document.createElement("style");
-		style.innerHTML = collapseStyle;
-		document.head.appendChild(style);
-		this.loadedStyles.push(style);
-	}
-
-	unloadStyle = () => {
-		for (let style of this.loadedStyles) {
-			document.head.removeChild(style);
-		}
-		this.loadedStyles.length = 0;
-	}
-
-	handleStyleToggle = (newStyle: boolean) => {
-		if (!newStyle) {
-			this.loadStyle();
-		} else {
-			this.unloadStyle();
-		}
-	}
-
 }
-
-const collapseStyle = `
-	.nav-folder:not(.is-collapsed) > .nav-folder-title > .oz-folder-numbers { 
-		display: none; 
-	}
-
-	.oz-folder-numbers:not([haschild='true']){
-		display: inline !important;
-	}
-`
