@@ -10,13 +10,13 @@
 
 ## Sample View
 
-<img src="./images/folder-count.png" width="50%"/>
+<img src="https://github.com/ozntel/file-explorer-note-count/raw/main/images/folder-count.png" width="50%"/>
 
 ## Settings
 
 - You can turn on the option for viewing the counts for all folders including the expanded folders. Otherwise, expanded folders won't have the number unless the expanded folder does not include any sub-folder.
 
-<img src="./images/collapsed-folder-setting.png" />
+<img src="https://github.com/ozntel/file-explorer-note-count/raw/main/images/collapsed-folder-setting.png" />
 
 ## Contact
 
