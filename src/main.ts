@@ -5,7 +5,9 @@ export default class FileExplorerNoteCount extends Plugin {
 	async onload() {
 		this.updateFolderNumbers();
 		this.app.metadataCache.on('resolved', this.updateFolderNumbers);
-		this.registerDomEvent(document, 'click', this.updateFolderNumbers);
+		this.app.vault.on('create', this.updateFolderNumbers);
+		this.app.vault.on('rename', this.updateFolderNumbers);
+		this.app.vault.on('delete', this.updateFolderNumbers);
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
@@ -23,6 +25,15 @@ export default class FileExplorerNoteCount extends Plugin {
 		// Get All Available Notes under Vault
 		var mdNotes = this.app.vault.getMarkdownFiles();
 
+		// Create Folder File Map
+		const counts: { [key: string]: number } = {};
+
+		mdNotes.forEach(mdNote => {
+			for (let folder = mdNote.parent; folder != null; folder = folder.parent) {
+				counts[folder.path] = 1 + (counts[folder.path] || 0)
+			}
+		})
+
 		// Loop All Available Folder Titles
 		allFolderTitleNodes.forEach(folderTitleNode => {
 
@@ -31,14 +42,6 @@ export default class FileExplorerNoteCount extends Plugin {
 
 			// No number for the Vault Main Folder
 			if (currentDataPath === '/') return;
-
-			// Collapsed Folder Should include all notes under subfolders
-			var folderPathRegex = new RegExp(currentDataPath + '/.*')
-			var filteredNotes = mdNotes.filter(mdNote => {
-				return mdNote.path.match(folderPathRegex)
-			})
-			var numberDiv = document.createElement('div');
-			numberDiv.className = 'oz-folder-numbers';
 
 			const isCollapsed = folderTitleNode.parentElement.className.includes('is-collapsed');
 
@@ -49,8 +52,12 @@ export default class FileExplorerNoteCount extends Plugin {
 			})
 
 			if (isCollapsed || (!isCollapsed && !hasChildFolder)) {
-				numberDiv.innerText = filteredNotes.length.toString();
-				folderTitleNode.appendChild(numberDiv);
+				folderTitleNode.createDiv(
+					{
+						cls: 'oz-folder-numbers',
+						text: counts[currentDataPath].toString()
+					}
+				)
 			}
 		})
 	}
@@ -63,5 +70,3 @@ export default class FileExplorerNoteCount extends Plugin {
 	}
 
 }
-
-
