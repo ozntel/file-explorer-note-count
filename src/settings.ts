@@ -29,7 +29,7 @@ export class FileExplorerNoteCountSettingsTab extends PluginSettingTab {
 			.addToggle((toggle) => toggle
 				.setValue(this.plugin.settings.showAllNumbers)
 				.onChange((value) => {
-					this.plugin.handleStyleToggle(value);
+					document.body.toggleClass('oz-show-all-num', value);
 					this.plugin.settings.showAllNumbers = value;
 					this.plugin.saveSettings();
 				})

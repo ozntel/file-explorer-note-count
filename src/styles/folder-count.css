@@ -8,3 +8,10 @@
   padding: 2px 4px;
   background-color: var(--background-secondary-alt);
 }
+
+body:not(.oz-show-all-num)
+  .nav-folder:not(.is-collapsed)
+  > .nav-folder-title
+  > .nav-folder-title-content.oz-with-subfolder[data-count]::after {
+  display: none;
+}

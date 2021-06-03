@@ -1,8 +1,8 @@
 import { FileExplorer, Plugin } from 'obsidian';
 import { DEFAULT_SETTINGS, FileExplorerNoteCountSettingsTab } from './settings';
-import './main.css'
 import { setupCount, updateCount } from './folder-count';
 import { dirname } from 'path';
+import { withSubfolderClass } from 'misc';
 
 export default class FileExplorerNoteCount extends Plugin {
 
@@ -40,11 +40,16 @@ export default class FileExplorerNoteCount extends Plugin {
     if (leaves.length > 1) console.error('more then one file-explorer');
     else if (leaves.length < 1) console.error('file-explorer not found');
     else {
-			if (this.fileExplorer) this.fileExplorer = leaves[0].view as FileExplorer;
+			if (!this.fileExplorer) this.fileExplorer = leaves[0].view as FileExplorer;
 			setupCount(this, revert);
       if (!revert) this.registerVaultEvent();
+			if (revert) {
+				for (const el of document.getElementsByClassName(withSubfolderClass)) {
+					el.removeClass(withSubfolderClass);
+				}
+			}
+			if (this.settings.showAllNumbers) document.body.addClass("oz-show-all-num");
     }
-		
   };
 
 	async onload() {

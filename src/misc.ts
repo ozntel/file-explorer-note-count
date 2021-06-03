@@ -1,6 +1,8 @@
 import { AFItem, FolderItem, TFolder, FileExplorer } from "obsidian";
 import { dirname } from "path";
 
+export const withSubfolderClass = "oz-with-subfolder";
+
 export const isFolder = (item: AFItem): item is FolderItem =>
   (item as FolderItem).file instanceof TFolder;
 
