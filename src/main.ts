@@ -20,6 +20,9 @@ export default class FileExplorerNoteCount extends Plugin {
 
 		const allFolderTitleNodes = document.querySelectorAll('.nav-folder-title');
 
+		// Get All Available Notes under Vault
+		var mdNotes = this.app.vault.getMarkdownFiles();
+
 		// Loop All Available Folder Titles
 		allFolderTitleNodes.forEach(folderTitleNode => {
 
@@ -28,9 +31,6 @@ export default class FileExplorerNoteCount extends Plugin {
 
 			// No number for the Vault Main Folder
 			if (currentDataPath === '/') return;
-
-			// Get All Available Notes under Vault
-			var mdNotes = this.app.vault.getMarkdownFiles();
 
 			// Collapsed Folder Should include all notes under subfolders
 			var folderPathRegex = new RegExp(currentDataPath + '/.*')
