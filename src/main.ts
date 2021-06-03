@@ -28,6 +28,10 @@ export default class FileExplorerNoteCount extends Plugin {
 	onunload() {
 		this.clearInsertedNumbers();
 		console.log('unloading plugin');
+		this.app.vault.off('create', this.updateFolderNumbers);
+		this.app.vault.off('rename', this.updateFolderNumbers);
+		this.app.vault.off('delete', this.updateFolderNumbers);
+		this.unloadStyle();
 	}
 
 	async loadSettings() {
