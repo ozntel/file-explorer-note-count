@@ -1,7 +1,7 @@
-.nav-folder-title-content[data-count]::after {
+.nav-folder-title[data-count]::after {
   content: attr(data-count);
-  position: absolute;
-  right: 0;
+  display: inline-block;
+  position: relative;
   font-size: 12px;
   line-height: 12px;
   border-radius: 3px;
@@ -11,7 +11,6 @@
 
 body:not(.oz-show-all-num)
   .nav-folder:not(.is-collapsed)
-  > .nav-folder-title
-  > .nav-folder-title-content.oz-with-subfolder[data-count]::after {
+  > .nav-folder-title.oz-with-subfolder[data-count]::after {
   display: none;
 }

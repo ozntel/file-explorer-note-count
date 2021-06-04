@@ -45,8 +45,8 @@ function setCount(item: FolderItem) {
   if (item.file.isRoot()) return;
   // @ts-ignore
   const count = item.file.getFileCount() as number;
-  item.titleInnerEl.dataset["count"] = count.toString();
-  item.titleInnerEl.toggleClass(
+  item.titleEl.dataset["count"] = count.toString();
+  item.titleEl.toggleClass(
     withSubfolderClass,
     Array.isArray(item.file.children) &&
       item.file.children.findIndex((af) => af instanceof TFolder) !== -1,
@@ -54,7 +54,7 @@ function setCount(item: FolderItem) {
 }
 
 function removeCount(item: FolderItem) {
-  if (item.titleInnerEl.dataset["count"])
-    delete item.titleInnerEl.dataset["count"];
-  item.titleInnerEl.removeClass(withSubfolderClass);
+  if (item.titleEl.dataset["count"])
+    delete item.titleEl.dataset["count"];
+  item.titleEl.removeClass(withSubfolderClass);
 }
