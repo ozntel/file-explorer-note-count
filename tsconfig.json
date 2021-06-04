@@ -1,26 +1,18 @@
 {
-  "compilerOptions": {
-    "baseUrl": "src",
-    "outDir": "",
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "module": "ESNext",
-    "target": "es6",
-    "allowJs": true,
-    "noImplicitAny": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": [
-      "dom",
-      "es5",
-      "scripthost",
-      "ES2020",
-      "DOM.Iterable"
-    ]
-  },
-  "include": [
-    "src/**/*.ts"
-  ]
+    "compilerOptions": {
+        "baseUrl": "src",
+        "outDir": "",
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "module": "ESNext",
+        "target": "es6",
+        "allowJs": true,
+        "noImplicitAny": true,
+        "strict": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["dom", "es5", "scripthost", "ES2020", "DOM.Iterable"]
+    },
+    "include": ["src/**/*.ts"]
 }
