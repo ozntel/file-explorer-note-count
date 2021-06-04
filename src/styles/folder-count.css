@@ -2,15 +2,20 @@
   content: attr(data-count);
   display: inline-block;
   position: relative;
-  font-size: 12px;
-  line-height: 12px;
-  border-radius: 3px;
-  padding: 2px 4px;
-  background-color: var(--background-secondary-alt);
+  font-size: calc(100% * 0.8);
+  margin-right: 4px;
+  /* border-radius: 3px; */
+  /* padding: 2px 4px; */
+  /* background-color: var(--background-secondary-alt); */
+  transition: opacity 200ms ease-in-out;
 }
 
 body:not(.oz-show-all-num)
   .nav-folder:not(.is-collapsed)
   > .nav-folder-title.oz-with-subfolder[data-count]::after {
+    opacity: 0;
+}
+
+.nav-folder-title[data-count="0"]::after {
   display: none;
 }
