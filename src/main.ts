@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, FileExplorerNoteCountSettingsTab } from './settings';
 import { setupCount, updateCount } from './folder-count';
 import { dirname } from 'path';
 import { withSubfolderClass } from 'misc';
+import './styles/patch.css';
 
 export default class FileExplorerNoteCount extends Plugin {
 
