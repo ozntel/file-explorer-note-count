@@ -1,4 +1,4 @@
-import { AFItem, FolderItem, TFolder, FileExplorer } from "obsidian";
+import { AFItem, FolderItem, TFolder, FileExplorer, TAbstractFile } from "obsidian";
 import { dirname } from "path";
 
 export const withSubfolderClass = "oz-with-subfolder";
@@ -21,3 +21,6 @@ export const getParentPath = (src: string) => {
   if (path === ".") return "/";
   else return path;
 };
+
+export type AbstractFileFilter = (af: TAbstractFile) => boolean;
+

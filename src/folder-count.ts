@@ -1,7 +1,21 @@
 import FileExplorerNoteCount from "main";
-import { isFolder, iterateItems, getParentPath, withSubfolderClass } from "misc";
+import {
+  isFolder,
+  iterateItems,
+  getParentPath,
+  withSubfolderClass,
+  AbstractFileFilter,
+} from 'misc';
 import { AFItem, FolderItem, TAbstractFile, TFolder } from "obsidian";
 import "./styles/folder-count.css";
+
+function countFolderChildren(folder: TFolder, filter: AbstractFileFilter) {
+  let count = 0;
+  for (const af of folder.children) {
+    if (filter(af)) count++;
+  }
+  return count;
+}
 
 export function updateCount(
   file: string | TAbstractFile,
@@ -12,7 +26,7 @@ export function updateCount(
 
   const iterate = (folder: TFolder) => {
     if (!folder.isRoot()) {
-      setCount(explorer.fileItems[folder.path] as FolderItem);
+      setCount(explorer.fileItems[folder.path] as FolderItem, plugin.fileFilter);
       iterate(folder.parent);
     }
   };
@@ -37,15 +51,17 @@ export function setupCount(plugin: FileExplorerNoteCount, revert = false) {
   iterateItems(plugin.fileExplorer.fileItems, (item: AFItem) => {
     if (!isFolder(item)) return;
     if (revert) removeCount(item);
-    else setCount(item);
+    else setCount(item, plugin.fileFilter);
   });
 }
 
-function setCount(item: FolderItem) {
+function setCount(
+  item: FolderItem,
+  filter: AbstractFileFilter
+) {
   if (item.file.isRoot()) return;
-  // @ts-ignore
-  const count = item.file.getFileCount() as number;
-  item.titleEl.dataset["count"] = count.toString();
+  const count = countFolderChildren(item.file, filter);
+  item.titleEl.dataset['count'] = count.toString();
   item.titleEl.toggleClass(
     withSubfolderClass,
     Array.isArray(item.file.children) &&

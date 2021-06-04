@@ -1,8 +1,8 @@
-import { FileExplorer, Plugin } from 'obsidian';
+import { FileExplorer, Plugin, TFile } from 'obsidian';
 import { DEFAULT_SETTINGS, FileExplorerNoteCountSettingsTab } from './settings';
 import { setupCount, updateCount } from './folder-count';
 import { dirname } from 'path';
-import { withSubfolderClass } from 'misc';
+import { withSubfolderClass, AbstractFileFilter } from 'misc';
 import './styles/patch.css';
 
 export default class FileExplorerNoteCount extends Plugin {
@@ -76,4 +76,31 @@ export default class FileExplorerNoteCount extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+  reloadCount() {
+    setupCount(this);
+  }
+
+  get fileFilter(): AbstractFileFilter {
+    const list = this.settings.filterList.flat();
+    // return empty array directly if filterList is empty
+    const blackList = list.length
+      ? list.filter((ex) => ex.startsWith('^')).map((v) => v.substring(1))
+      : [];
+    const whiteList = list.length ? list.filter((ex) => !ex.startsWith('^')) : [];
+    return (af) => {
+      if (af instanceof TFile) {
+        const { extension: target } = af;
+        // if list is empty, filter nothing
+        if (list.length === 0)
+          return true;
+        // whitelist has higher priority
+        else if (whiteList.length)
+          return whiteList.findIndex((ex) => target === ex) !== -1;
+        else if (blackList.length)
+          return blackList.every((ex) => target !== ex) ;
+        else throw new Error("FileFilter error: entry that should not be reached");
+      } else return false;
+    }
+  }
 }
