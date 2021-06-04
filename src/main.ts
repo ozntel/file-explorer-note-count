@@ -1,5 +1,5 @@
 import { FileExplorer, Plugin, TFile } from 'obsidian';
-import { DEFAULT_SETTINGS, FileExplorerNoteCountSettingsTab } from './settings';
+import { DEFAULT_SETTINGS, FENoteCountSettingTab } from './settings';
 import { setupCount, updateCount } from './folder-count';
 import { dirname } from 'path';
 import { withSubfolderClass, AbstractFileFilter } from 'misc';
@@ -7,7 +7,6 @@ import './styles/patch.css';
 
 export default class FileExplorerNoteCount extends Plugin {
     settings = DEFAULT_SETTINGS;
-    loadedStyles: HTMLStyleElement[] = [];
 
     fileExplorer?: FileExplorer;
 
@@ -59,7 +58,7 @@ export default class FileExplorerNoteCount extends Plugin {
     async onload() {
         console.log('loading FileExplorerNoteCount');
         this.addSettingTab(
-            new FileExplorerNoteCountSettingsTab(this.app, this),
+            new FENoteCountSettingTab(this.app, this),
         );
         await this.loadSettings();
         if (this.app.workspace.layoutReady) this.initialize();

@@ -1,17 +1,17 @@
-import { PluginSettingTab, App, Setting, TAbstractFile, TFile } from 'obsidian';
+import { PluginSettingTab, App, Setting } from 'obsidian';
 import FileExplorerNoteCount from './main';
 
-export interface FileExplorerNoteCountSettings {
+export interface FENoteCountSettings {
     showAllNumbers: boolean;
     filterList: string[][];
 }
 
-export const DEFAULT_SETTINGS: FileExplorerNoteCountSettings = {
+export const DEFAULT_SETTINGS: FENoteCountSettings = {
     showAllNumbers: false,
     filterList: [['md']],
 };
 
-export class FileExplorerNoteCountSettingsTab extends PluginSettingTab {
+export class FENoteCountSettingTab extends PluginSettingTab {
     plugin: FileExplorerNoteCount;
 
     constructor(app: App, plugin: FileExplorerNoteCount) {
