@@ -1,10 +1,10 @@
-# Obsidian File Explorer Notes Count
+# Obsidian File Explorer Count
 
 ## Brief Explanation
 
-- This plugin helps you to see the number of notes you have under all available folders within your file explorer. 
+- This plugin helps you to see the number of elements you have under all available folders within your file explorer. 
 
-- Counts will include total number of all markdown notes under a folder and its sub-folders.
+- Counts will include total number of all elements under a folder and its sub-folders.
 
 - By default, expanded folders won't have the number of notes in case they have sub-folders.
 
@@ -22,6 +22,4 @@
 
 If you have any issue or you have any suggestion, please feel free to reach me out directly using contact page of my website [ozan.pl/contact/](https://www.ozan.pl/contact/) or directly to <me@ozan.pl>.
 
-## Support
-
-<a href="https://www.buymeacoffee.com/ozante" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="20%" height="auto"></a>
+You can also contact directly with [Aiden](https://github.com/AidenLx).
