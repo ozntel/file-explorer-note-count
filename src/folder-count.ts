@@ -13,6 +13,7 @@ function countFolderChildren(folder: TFolder, filter: AbstractFileFilter) {
     let count = 0;
     for (const af of folder.children) {
         if (filter(af)) count++;
+        if (af instanceof TFolder) count += countFolderChildren(af, filter);
     }
     return count;
 }
