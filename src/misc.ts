@@ -29,3 +29,13 @@ export const getParentPath = (src: string) => {
 };
 
 export type AbstractFileFilter = (af: TAbstractFile) => boolean;
+
+export function equals(arr1: any, arr2: any) {
+    // if the other array is a falsy value, return
+    if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+
+    // compare lengths - can save a lot of time
+    if (arr1.length != arr2.length) return false;
+
+    return arr1.every((v, i) => v === arr2[i]);
+}

@@ -1,14 +1,17 @@
+import { equals } from 'misc';
 import { PluginSettingTab, App, Setting } from 'obsidian';
 import FileExplorerNoteCount from './main';
 
 export interface FENoteCountSettings {
     showAllNumbers: boolean;
-    filterList: string[][];
+    filterList: string[];
+    blacklist: boolean;
 }
 
 export const DEFAULT_SETTINGS: FENoteCountSettings = {
     showAllNumbers: false,
-    filterList: [['md']],
+    filterList: ['md'],
+    blacklist: false,
 };
 
 export class FENoteCountSettingTab extends PluginSettingTab {
@@ -20,6 +23,25 @@ export class FENoteCountSettingTab extends PluginSettingTab {
     }
 
     delayTimer?: number;
+
+    get showOnlyNoteValue(): boolean {
+        const { settings } = this.plugin;
+        return (
+            settings.blacklist === DEFAULT_SETTINGS.blacklist &&
+            equals(settings.filterList, DEFAULT_SETTINGS.filterList)
+        );
+    }
+
+    set showOnlyNoteValue(value: boolean) {
+        const { blacklist, filterList } = DEFAULT_SETTINGS;
+        this.plugin.settings.blacklist = blacklist;
+        if (value) {
+            // do deep copy
+            this.plugin.settings.filterList = Array.from(filterList);
+        } else {
+            this.plugin.settings.filterList.length = 0;
+        }
+    }
 
     display(): void {
         let { containerEl } = this;
@@ -42,41 +64,68 @@ export class FENoteCountSettingTab extends PluginSettingTab {
                         this.plugin.saveSettings();
                     }),
             );
+        this.filterOpt();
+    }
+
+    filterOpt(): void {
         new Setting(this.containerEl)
-            .setName('Filter List')
+            .setName('Show Only Markdown Notes')
             .setDesc(
-                createFragment((descEl) => {
-                    descEl.appendText(
-                        'Extension list to include and exclude file during counting',
-                    );
-                    descEl.appendChild(document.createElement('br'));
-                    descEl.appendText('Separated by line break and/or comma');
-                    descEl.appendChild(document.createElement('br'));
-                    descEl.appendText(
-                        'enter "md" to include markdown file, "^mp4" to exclude mp4 file',
-                    );
-                }),
+                'Turn off this option to choose file that should be counted',
             )
-            .addTextArea((text) => {
-                text.setValue(
-                    this.plugin.settings.filterList
-                        .map((array) => array.join(','))
-                        .join('\n'),
-                ).onChange((value) => {
-                    if (this.delayTimer) window.clearTimeout(this.delayTimer);
-                    this.delayTimer = window.setTimeout(async () => {
-                        const list = value
-                            .split('\n')
-                            .map((stringArray) =>
-                                stringArray.split(',').map((key) => key.trim()),
-                            );
-                        this.plugin.settings.filterList = list;
-                        this.plugin.reloadCount();
-                        await this.plugin.saveSettings();
-                    }, 500);
+            .addToggle((toggle) =>
+                toggle.setValue(this.showOnlyNoteValue).onChange((value) => {
+                    this.showOnlyNoteValue = value;
+                    this.plugin.reloadCount();
+                    this.plugin.saveSettings();
+                    this.display();
+                }),
+            );
+        if (!this.showOnlyNoteValue) {
+            new Setting(this.containerEl)
+                .setName('Filter List')
+                .setDesc(
+                    createFragment((descEl) => {
+                        descEl.appendText(
+                            'Extension list to include/exclude file during counting',
+                        );
+                        descEl.appendChild(document.createElement('br'));
+                        descEl.appendText('Separated by comma');
+                    }),
+                )
+                .addTextArea((text) => {
+                    text.setPlaceholder(
+                        'Leave it empty to count all types of files',
+                    );
+                    text.setValue(
+                        this.plugin.settings.filterList.join(', '),
+                    ).onChange((value) => {
+                        if (this.delayTimer)
+                            window.clearTimeout(this.delayTimer);
+                        this.delayTimer = window.setTimeout(async () => {
+                            const list = value.split(',').map((v) => v.trim());
+                            this.plugin.settings.filterList = list;
+                            this.plugin.reloadCount();
+                            await this.plugin.saveSettings();
+                        }, 500);
+                    });
+                    text.inputEl.rows = 2;
+                    text.inputEl.cols = 25;
                 });
-                text.inputEl.rows = 3;
-                text.inputEl.cols = 25;
-            });
+            new Setting(this.containerEl)
+                .setName('Enable Blacklist')
+                .setDesc(
+                    'Turn on this option to use Filter List to exclude files',
+                )
+                .addToggle((toggle) =>
+                    toggle
+                        .setValue(this.plugin.settings.blacklist)
+                        .onChange((value) => {
+                            this.plugin.settings.blacklist = value;
+                            this.plugin.reloadCount();
+                            this.plugin.saveSettings();
+                        }),
+                );
+        }
     }
 }

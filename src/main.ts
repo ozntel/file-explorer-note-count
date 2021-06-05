@@ -57,9 +57,7 @@ export default class FileExplorerNoteCount extends Plugin {
 
     async onload() {
         console.log('loading FileExplorerNoteCount');
-        this.addSettingTab(
-            new FENoteCountSettingTab(this.app, this),
-        );
+        this.addSettingTab(new FENoteCountSettingTab(this.app, this));
         await this.loadSettings();
         if (this.app.workspace.layoutReady) this.initialize();
         else
@@ -86,28 +84,15 @@ export default class FileExplorerNoteCount extends Plugin {
     }
 
     get fileFilter(): AbstractFileFilter {
-        const list = this.settings.filterList.flat();
-        // return empty array directly if filterList is empty
-        const blackList = list.length
-            ? list.filter((ex) => ex.startsWith('^')).map((v) => v.substring(1))
-            : [];
-        const whiteList = list.length
-            ? list.filter((ex) => !ex.startsWith('^'))
-            : [];
+        let list = this.settings.filterList;
         return (af) => {
             if (af instanceof TFile) {
                 const { extension: target } = af;
                 // if list is empty, filter nothing
                 if (list.length === 0) return true;
-                // whitelist has higher priority
-                else if (whiteList.length)
-                    return whiteList.findIndex((ex) => target === ex) !== -1;
-                else if (blackList.length)
-                    return blackList.every((ex) => target !== ex);
-                else
-                    throw new Error(
-                        'FileFilter error: entry that should not be reached',
-                    );
+                else if (this.settings.blacklist)
+                    return list.every((ex) => target !== ex);
+                else return list.findIndex((ex) => target === ex) !== -1;
             } else return false;
         };
     }
