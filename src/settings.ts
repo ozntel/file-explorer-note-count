@@ -1,5 +1,5 @@
 import { equals } from 'misc';
-import { App, PluginSettingTab, Setting } from 'obsidian';
+import { App, debounce, PluginSettingTab, Setting } from 'obsidian';
 
 import FileExplorerNoteCount from './main';
 
@@ -22,8 +22,6 @@ export class FENoteCountSettingTab extends PluginSettingTab {
         super(app, plugin);
         this.plugin = plugin;
     }
-
-    delayTimer?: number;
 
     get showOnlyNoteValue(): boolean {
         const { settings } = this.plugin;
@@ -95,21 +93,18 @@ export class FENoteCountSettingTab extends PluginSettingTab {
                     }),
                 )
                 .addTextArea((text) => {
+                    const onChange = async (value: string) => {
+                        const list = value.split(',').map((v) => v.trim());
+                        this.plugin.settings.filterList = list;
+                        this.plugin.reloadCount();
+                        await this.plugin.saveSettings();
+                    };
                     text.setPlaceholder(
                         'Leave it empty to count all types of files',
                     );
                     text.setValue(
                         this.plugin.settings.filterList.join(', '),
-                    ).onChange((value) => {
-                        if (this.delayTimer)
-                            window.clearTimeout(this.delayTimer);
-                        this.delayTimer = window.setTimeout(async () => {
-                            const list = value.split(',').map((v) => v.trim());
-                            this.plugin.settings.filterList = list;
-                            this.plugin.reloadCount();
-                            await this.plugin.saveSettings();
-                        }, 500);
-                    });
+                    ).onChange(debounce(onChange, 500, true));
                     text.inputEl.rows = 2;
                     text.inputEl.cols = 25;
                 });
