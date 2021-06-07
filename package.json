@@ -40,47 +40,47 @@
     },
     "release-it": {
         "hooks": {
-          "before:init": [
-            "npm run prettier",
-            "npm run eslint"
-          ],
-          "after:bump": [
-            "sh scripts/bump-version.sh",
-            "npm run build"
-          ],
-          "after:git:release": "echo After git push, before github release",
-          "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+            "before:init": [
+                "npm run prettier",
+                "npm run eslint"
+            ],
+            "after:bump": [
+                "sh scripts/bump-version.sh",
+                "npm run build"
+            ],
+            "after:git:release": "echo After git push, before github release",
+            "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
         },
         "git": {
-          "commitMessage": "chore: release v${version}",
-          "tagName": "${version}",
-          "tagAnnotation": "Release v${version}"
+            "commitMessage": "chore: release v${version}",
+            "tagName": "${version}",
+            "tagAnnotation": "Release v${version}"
         },
         "npm": {
-          "publish": false
+            "publish": false
         },
         "github": {
-          "release": true,
-          "assets": [
-            "main.js",
-            "manifest.json",
-            "styles.css"
-          ],
-          "releaseName": "${version}"
+            "release": true,
+            "assets": [
+                "main.js",
+                "manifest.json",
+                "styles.css"
+            ],
+            "releaseName": "${version}"
         },
         "plugins": {
-          "@release-it/bumper": {
-            "out": "manifest.json"
-          },
-          "@release-it/conventional-changelog": {
-            "preset": "angular",
-            "infile": "CHANGELOG.md"
-          }
+            "@release-it/bumper": {
+                "out": "manifest.json"
+            },
+            "@release-it/conventional-changelog": {
+                "preset": "angular",
+                "infile": "CHANGELOG.md"
+            }
         }
-      },
-      "config": {
+    },
+    "config": {
         "commitizen": {
-          "path": "./node_modules/cz-conventional-changelog"
+            "path": "./node_modules/cz-conventional-changelog"
         }
-      }
+    }
 }

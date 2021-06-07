@@ -23,7 +23,6 @@ export default class FileExplorerNoteCount extends Plugin {
                 // when file is moved
                 if (dirname(af.path) !== dirname(oldPath)) {
                     updateCount(af, this);
-                    updateCount(oldPath, this);
                 }
             }),
         );
