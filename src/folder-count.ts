@@ -1,27 +1,28 @@
-import FileExplorerNoteCount from 'main';
-import {
-    isFolder,
-    iterateItems,
-    getParentPath,
-    withSubfolderClass,
-    AbstractFileFilter,
-} from 'misc';
-import { AFItem, FolderItem, TAbstractFile, TFolder } from 'obsidian';
 import './styles/folder-count.css';
 
-function countFolderChildren(folder: TFolder, filter: AbstractFileFilter) {
+import FileExplorerNoteCount from 'main';
+import {
+    AbstractFileFilter,
+    getParentPath,
+    isFolder,
+    iterateItems,
+    withSubfolderClass,
+} from 'misc';
+import { AFItem, FolderItem, TAbstractFile, TFolder } from 'obsidian';
+
+const countFolderChildren = (folder: TFolder, filter: AbstractFileFilter) => {
     let count = 0;
     for (const af of folder.children) {
         if (filter(af)) count++;
         if (af instanceof TFolder) count += countFolderChildren(af, filter);
     }
     return count;
-}
+};
 
-export function updateCount(
+export const updateCount = (
     file: string | TAbstractFile,
     plugin: FileExplorerNoteCount,
-) {
+) => {
     if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
     const explorer = plugin.fileExplorer;
 
@@ -47,9 +48,9 @@ export function updateCount(
     } else parent = file.parent;
 
     iterate(parent);
-}
+};
 
-export function setupCount(plugin: FileExplorerNoteCount, revert = false) {
+export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
     if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
 
     iterateItems(plugin.fileExplorer.fileItems, (item: AFItem) => {
@@ -57,9 +58,9 @@ export function setupCount(plugin: FileExplorerNoteCount, revert = false) {
         if (revert) removeCount(item);
         else setCount(item, plugin.fileFilter);
     });
-}
+};
 
-function setCount(item: FolderItem, filter: AbstractFileFilter) {
+const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
     if (item.file.isRoot()) return;
     const count = countFolderChildren(item.file, filter);
     item.titleEl.dataset['count'] = count.toString();
@@ -68,9 +69,9 @@ function setCount(item: FolderItem, filter: AbstractFileFilter) {
         Array.isArray(item.file.children) &&
             item.file.children.findIndex((af) => af instanceof TFolder) !== -1,
     );
-}
+};
 
-function removeCount(item: FolderItem) {
+const removeCount = (item: FolderItem) => {
     if (item.titleEl.dataset['count']) delete item.titleEl.dataset['count'];
     item.titleEl.removeClass(withSubfolderClass);
-}
+};

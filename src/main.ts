@@ -1,9 +1,11 @@
-import { FileExplorer, Plugin, TFile } from 'obsidian';
-import { DEFAULT_SETTINGS, FENoteCountSettingTab } from './settings';
-import { setupCount, updateCount } from './folder-count';
-import { dirname } from 'path';
-import { withSubfolderClass, AbstractFileFilter } from 'misc';
 import './styles/patch.css';
+
+import { AbstractFileFilter, withSubfolderClass } from 'misc';
+import { FileExplorer, Plugin, TFile } from 'obsidian';
+import { dirname } from 'path';
+
+import { setupCount, updateCount } from './folder-count';
+import { DEFAULT_SETTINGS, FENoteCountSettingTab } from './settings';
 
 export default class FileExplorerNoteCount extends Plugin {
     settings = DEFAULT_SETTINGS;

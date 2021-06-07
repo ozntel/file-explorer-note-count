@@ -1,5 +1,6 @@
 import { equals } from 'misc';
-import { PluginSettingTab, App, Setting } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
+
 import FileExplorerNoteCount from './main';
 
 export interface FENoteCountSettings {
