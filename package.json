@@ -31,6 +31,7 @@
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
+        "json": "^11.0.0",
         "obsidian": "^0.12.0",
         "prettier": "^2.3.0",
         "rollup": "^2.32.1",
@@ -45,10 +46,11 @@
                 "npm run eslint"
             ],
             "after:bump": [
-                "sh scripts/bump-version.sh",
+                "json -I -f manifest.json -e \"this.version='${version}'\" -o json-4",
+                "json -I -f versions.json -e \"this['${version}']='$(cat manifest.json | json minAppVersion)'\" -o json-4",
+                "git add .",
                 "npm run build"
             ],
-            "after:git:release": "echo After git push, before github release",
             "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
         },
         "git": {
