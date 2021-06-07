@@ -19,10 +19,13 @@ const countFolderChildren = (folder: TFolder, filter: AbstractFileFilter) => {
     return count;
 };
 
+/**
+ * Update folder count of target's parent
+ */
 export const updateCount = (
-    file: string | TAbstractFile,
+    target: string | TAbstractFile,
     plugin: FileExplorerNoteCount,
-) => {
+): void => {
     if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
     const explorer = plugin.fileExplorer;
 
@@ -37,15 +40,15 @@ export const updateCount = (
     };
 
     let parent: TFolder;
-    if (typeof file === 'string' || !file.parent) {
-        const filePath = typeof file === 'string' ? file : file.path;
+    if (typeof target === 'string' || !target.parent) {
+        const filePath = typeof target === 'string' ? target : target.path;
         const parentPath = getParentPath(filePath);
         parent = plugin.app.vault.getAbstractFileByPath(parentPath) as TFolder;
         if (!parent) {
             console.error('cannot find parent: ' + parentPath);
             return;
         }
-    } else parent = file.parent;
+    } else parent = target.parent;
 
     iterate(parent);
 };

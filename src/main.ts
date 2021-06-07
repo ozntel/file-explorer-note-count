@@ -1,7 +1,7 @@
 import './styles/patch.css';
 
-import { AbstractFileFilter, withSubfolderClass } from 'misc';
-import { FileExplorer, Plugin, TFile } from 'obsidian';
+import { AbstractFileFilter, getParentPath, withSubfolderClass } from 'misc';
+import { FileExplorer, Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
 import { dirname } from 'path';
 
 import { setupCount, updateCount } from './folder-count';
@@ -12,6 +12,19 @@ export default class FileExplorerNoteCount extends Plugin {
 
     fileExplorer?: FileExplorer;
 
+    onRename = (af: TAbstractFile, oldPath: string) => {
+        // only update when file is moved to other location
+        // if af is TFolder, its count will be updated when its children are renamed
+        if (af instanceof TFolder && dirname(af.path) === dirname(oldPath))
+            return;
+
+        updateCount(af, this);
+        const oldParent = getParentPath(oldPath);
+        // when file is moved alone (not with folder)
+        if (this.app.vault.getAbstractFileByPath(oldParent))
+            updateCount(oldPath, this);
+    };
+
     registerVaultEvent() {
         // attach events on new folder
         this.registerEvent(
@@ -20,14 +33,7 @@ export default class FileExplorerNoteCount extends Plugin {
             }),
         );
         // include mv and rename
-        this.registerEvent(
-            this.app.vault.on('rename', (af, oldPath) => {
-                // when file is moved
-                if (dirname(af.path) !== dirname(oldPath)) {
-                    updateCount(af, this);
-                }
-            }),
-        );
+        this.registerEvent(this.app.vault.on('rename', this.onRename));
         this.registerEvent(
             this.app.vault.on('delete', (af) => {
                 updateCount(af, this);
