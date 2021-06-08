@@ -1,10 +1,10 @@
 import './styles/patch.css';
 
-import { AbstractFileFilter, getParentPath, withSubfolderClass } from 'misc';
-import { FileExplorer, Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
-import { dirname } from 'path-browserify';
+import { AbstractFileFilter, withSubfolderClass } from 'misc';
+import { FileExplorer, Plugin, TFile } from 'obsidian';
+import { VaultHandler } from 'vault-handler';
 
-import { setupCount, updateCount } from './folder-count';
+import { setupCount } from './folder-count';
 import { DEFAULT_SETTINGS, FENoteCountSettingTab } from './settings';
 
 export default class FileExplorerNoteCount extends Plugin {
@@ -12,34 +12,7 @@ export default class FileExplorerNoteCount extends Plugin {
 
     fileExplorer?: FileExplorer;
 
-    onRename = (af: TAbstractFile, oldPath: string) => {
-        // only update when file is moved to other location
-        // if af is TFolder, its count will be updated when its children are renamed
-        if (af instanceof TFolder && dirname(af.path) === dirname(oldPath))
-            return;
-
-        updateCount(af, this);
-        const oldParent = getParentPath(oldPath);
-        // when file is moved alone (not with folder)
-        if (this.app.vault.getAbstractFileByPath(oldParent))
-            updateCount(oldPath, this);
-    };
-
-    registerVaultEvent() {
-        // attach events on new folder
-        this.registerEvent(
-            this.app.vault.on('create', (af) => {
-                updateCount(af, this);
-            }),
-        );
-        // include mv and rename
-        this.registerEvent(this.app.vault.on('rename', this.onRename));
-        this.registerEvent(
-            this.app.vault.on('delete', (af) => {
-                updateCount(af, this);
-            }),
-        );
-    }
+    vaultHandler = new VaultHandler(this);
 
     initialize = (revert = false) => {
         const leaves = this.app.workspace.getLeavesOfType('file-explorer');
@@ -49,7 +22,7 @@ export default class FileExplorerNoteCount extends Plugin {
             if (!this.fileExplorer)
                 this.fileExplorer = leaves[0].view as FileExplorer;
             setupCount(this, revert);
-            if (!revert) this.registerVaultEvent();
+            if (!revert) this.vaultHandler.registerVaultEvent();
             if (revert) {
                 for (const el of document.getElementsByClassName(
                     withSubfolderClass,

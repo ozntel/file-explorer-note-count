@@ -5,10 +5,11 @@ import {
     AbstractFileFilter,
     getParentPath,
     isFolder,
+    isParent,
     iterateItems,
     withSubfolderClass,
 } from 'misc';
-import { AFItem, FolderItem, TAbstractFile, TFolder } from 'obsidian';
+import { AFItem, FolderItem, TFolder } from 'obsidian';
 
 const countFolderChildren = (folder: TFolder, filter: AbstractFileFilter) => {
     let count = 0;
@@ -19,38 +20,53 @@ const countFolderChildren = (folder: TFolder, filter: AbstractFileFilter) => {
     return count;
 };
 
+/** filter out all path that is the parent of existing path */
+const filterParent = (pathList: string[]): Set<string> => {
+    const list = Array.from(pathList);
+    list.sort();
+    for (let i = 0; i < list.length; i++) {
+        if (
+            i < list.length - 1 &&
+            (list[i] === list[i + 1] || isParent(list[i], list[i + 1]))
+        ) {
+            list.shift();
+            i--;
+        }
+    }
+    return new Set(list);
+};
+/** get all parents and add to set if not exist */
+const getAllParents = (path: string, set: Set<string>): void => {
+    let parent = getParentPath(path);
+    while (parent && !set.has(parent)) {
+        set.add(parent);
+        parent = getParentPath(parent);
+    }
+};
 /**
  * Update folder count of target's parent
  */
 export const updateCount = (
-    target: string | TAbstractFile,
+    targetList: string[],
     plugin: FileExplorerNoteCount,
 ): void => {
-    if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
-    const explorer = plugin.fileExplorer;
-
-    const iterate = (folder: TFolder) => {
-        if (!folder.isRoot()) {
-            setCount(
-                explorer.fileItems[folder.path] as FolderItem,
-                plugin.fileFilter,
-            );
-            iterate(folder.parent);
-        }
-    };
-
-    let parent: TFolder;
-    if (typeof target === 'string' || !target.parent) {
-        const filePath = typeof target === 'string' ? target : target.path;
-        const parentPath = getParentPath(filePath);
-        parent = plugin.app.vault.getAbstractFileByPath(parentPath) as TFolder;
-        if (!parent) {
-            console.error('cannot find parent: ' + parentPath);
-            return;
-        }
-    } else parent = target.parent;
-
-    iterate(parent);
+    const set = filterParent(targetList);
+    for (const path of targetList) {
+        getAllParents(path, set);
+    }
+    // set count of path
+    const { fileExplorer, fileFilter } = plugin;
+    if (!fileExplorer) {
+        console.error('fileExplorer missing');
+        return;
+    }
+    for (const path of set) {
+        // check if path available
+        if (!fileExplorer.fileItems[path]) continue;
+        setCount(fileExplorer.fileItems[path] as FolderItem, fileFilter);
+    }
+    // empty waitingList
+    targetList.length = 0;
 };
 
 export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
@@ -63,7 +79,7 @@ export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
     });
 };
 
-const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
+export const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
     if (item.file.isRoot()) return;
     const count = countFolderChildren(item.file, filter);
     item.titleEl.dataset['count'] = count.toString();

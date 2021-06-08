@@ -22,7 +22,8 @@ export const iterateItems = (
     }
 };
 
-export const getParentPath = (src: string) => {
+export const getParentPath = (src: string): string | null => {
+    if (src === '/') return null;
     const path = dirname(src);
     if (path === '.') return '/';
     else return path;
@@ -38,4 +39,12 @@ export const equals = (arr1: any, arr2: any) => {
     if (arr1.length != arr2.length) return false;
 
     return arr1.every((v, i) => v === arr2[i]);
+};
+
+export const isParent = (parent: string, child: string): boolean => {
+    if (child === parent) return false;
+    if (parent === '/') parent = '';
+    if (child === '/') child = '';
+    const parentTokens = parent.split('/').filter((i) => i.length);
+    return parentTokens.every((t, i) => child.split('/')[i] === t);
 };
