@@ -70,7 +70,7 @@ const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
     item.titleEl.toggleClass(
         withSubfolderClass,
         Array.isArray(item.file.children) &&
-            item.file.children.findIndex((af) => af instanceof TFolder) !== -1,
+            item.file.children.some((af) => af instanceof TFolder),
     );
 };
 

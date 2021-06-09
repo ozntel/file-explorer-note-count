@@ -66,11 +66,7 @@ export default class FileExplorerNoteCount extends Plugin {
         console.log('loading FileExplorerNoteCount');
         this.addSettingTab(new FENoteCountSettingTab(this.app, this));
         await this.loadSettings();
-        if (this.app.workspace.layoutReady) this.initialize();
-        else
-            this.registerEvent(
-                this.app.workspace.on('layout-ready', this.initialize),
-            );
+        this.app.workspace.onLayoutReady(this.initialize);
     }
 
     onunload() {
@@ -97,9 +93,8 @@ export default class FileExplorerNoteCount extends Plugin {
                 const { extension: target } = af;
                 // if list is empty, filter nothing
                 if (list.length === 0) return true;
-                else if (this.settings.blacklist)
-                    return list.every((ex) => target !== ex);
-                else return list.findIndex((ex) => target === ex) !== -1;
+                else if (this.settings.blacklist) return !list.includes(target);
+                else return list.includes(target);
             } else return false;
         };
     }
