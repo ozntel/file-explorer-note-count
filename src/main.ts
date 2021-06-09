@@ -2,7 +2,7 @@ import './styles/patch.css';
 
 import { AbstractFileFilter, getParentPath, withSubfolderClass } from 'misc';
 import { FileExplorer, Plugin, TAbstractFile, TFile, TFolder } from 'obsidian';
-import { dirname } from 'path';
+import { dirname } from 'path-browserify';
 
 import { setupCount, updateCount } from './folder-count';
 import { DEFAULT_SETTINGS, FENoteCountSettingTab } from './settings';

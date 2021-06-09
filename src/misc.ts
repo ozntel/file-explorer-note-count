@@ -5,7 +5,7 @@ import {
     TAbstractFile,
     TFolder,
 } from 'obsidian';
-import { dirname } from 'path';
+import { dirname } from 'path-browserify';
 
 export const withSubfolderClass = 'oz-with-subfolder';
 
