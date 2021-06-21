@@ -1,3 +1,16 @@
+## [1.1.1](https://github.com/ozntel/file-explorer-note-count/compare/1.1.0...1.1.1) (2021-06-21)
+
+
+### Bug Fixes
+
+* **main.ts:** fix class oz-show-all-num not removed when unload ([8dfd4f7](https://github.com/ozntel/file-explorer-note-count/commit/8dfd4f78a7b5437ae3fb1d004201e3cb43172c5a))
+* fix move folder reports error ([699507d](https://github.com/ozntel/file-explorer-note-count/commit/699507d93e2d78fe5fd0304e2ffaf66b48e20ceb))
+
+
+### Performance Improvements
+
+* use debounce for vault event ([a4498fd](https://github.com/ozntel/file-explorer-note-count/commit/a4498fdec90dddb09eb5b47f3865d2a0dce39a42))
+
 # [1.1.0](https://github.com/ozntel/file-explorer-note-count/compare/1.0.0...1.1.0) (2021-06-07)
 
 
