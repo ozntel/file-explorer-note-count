@@ -1,6 +1,10 @@
 import './styles/patch.css';
 
-import { AbstractFileFilter, withSubfolderClass } from 'misc';
+import {
+    AbstractFileFilter,
+    showAllNumbersClass,
+    withSubfolderClass,
+} from 'misc';
 import { FileExplorer, Plugin, TFile } from 'obsidian';
 import { VaultHandler } from 'vault-handler';
 
@@ -22,16 +26,18 @@ export default class FileExplorerNoteCount extends Plugin {
             if (!this.fileExplorer)
                 this.fileExplorer = leaves[0].view as FileExplorer;
             setupCount(this, revert);
-            if (!revert) this.vaultHandler.registerVaultEvent();
-            if (revert) {
+            if (!revert) {
+                this.vaultHandler.registerVaultEvent();
+                if (this.settings.showAllNumbers)
+                    document.body.addClass('oz-show-all-num');
+            } else {
                 for (const el of document.getElementsByClassName(
                     withSubfolderClass,
                 )) {
                     el.removeClass(withSubfolderClass);
                 }
+                document.body.removeClass(showAllNumbersClass);
             }
-            if (this.settings.showAllNumbers)
-                document.body.addClass('oz-show-all-num');
         }
     };
 

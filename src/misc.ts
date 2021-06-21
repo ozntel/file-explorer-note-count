@@ -8,6 +8,7 @@ import {
 import { dirname } from 'path-browserify';
 
 export const withSubfolderClass = 'oz-with-subfolder';
+export const showAllNumbersClass = 'oz-show-all-num';
 
 export const isFolder = (item: AFItem): item is FolderItem =>
     (item as FolderItem).file instanceof TFolder;
