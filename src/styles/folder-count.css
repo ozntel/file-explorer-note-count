@@ -7,12 +7,12 @@
     /* border-radius: 3px; */
     padding: 2px 0;
     /* background-color: var(--background-secondary-alt); */
-    transition: opacity 200ms ease-in-out;
+    transition: opacity 100ms ease-in-out;
 }
 
 body:not(.oz-show-all-num)
     .nav-folder:not(.is-collapsed)
-    > .nav-folder-title.oz-with-subfolder[data-count]::after {
+    > .nav-folder-title.oz-with-subfolder[data-count]:not([data-path='/'])::after {
     opacity: 0;
 }
 

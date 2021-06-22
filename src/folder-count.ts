@@ -80,7 +80,7 @@ export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
 };
 
 export const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
-    if (item.file.isRoot()) return;
+    // if (item.file.isRoot()) return;
     const count = countFolderChildren(item.file, filter);
     item.titleEl.dataset['count'] = count.toString();
     item.titleEl.toggleClass(
