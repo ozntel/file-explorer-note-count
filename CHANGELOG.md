@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/ozntel/file-explorer-note-count/compare/1.1.1...1.1.2) (2021-06-22)
+
+
+### Bug Fixes
+
+* **folder-count.ts:** fix count not showing up in root(vault) folder ([61089e2](https://github.com/ozntel/file-explorer-note-count/commit/61089e29ead927e7ccf6986638a69746b4d34994)), closes [#4](https://github.com/ozntel/file-explorer-note-count/issues/4)
+
 ## [1.1.1](https://github.com/ozntel/file-explorer-note-count/compare/1.1.0...1.1.1) (2021-06-21)
 
 
