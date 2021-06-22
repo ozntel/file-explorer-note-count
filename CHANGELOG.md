@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/ozntel/file-explorer-note-count/compare/1.1.2...1.1.3) (2021-06-22)
+
+
+### Bug Fixes
+
+* fix vault count shown in theme that hide root folder ([d9dd101](https://github.com/ozntel/file-explorer-note-count/commit/d9dd1011f0390523774c70f79c7f4ef9e570c1bc))
+
 ## [1.1.2](https://github.com/ozntel/file-explorer-note-count/compare/1.1.1...1.1.2) (2021-06-22)
 
 
