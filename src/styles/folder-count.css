@@ -9,6 +9,9 @@
     /* background-color: var(--background-secondary-alt); */
     transition: opacity 100ms ease-in-out;
 }
+.nav-folder-title.oz-root-hidden[data-count]::after {
+    display: none;
+}
 
 body:not(.oz-show-all-num)
     .nav-folder:not(.is-collapsed)

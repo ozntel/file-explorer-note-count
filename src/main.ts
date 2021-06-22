@@ -2,6 +2,7 @@ import './styles/patch.css';
 
 import {
     AbstractFileFilter,
+    rootHiddenClass,
     showAllNumbersClass,
     withSubfolderClass,
 } from 'misc';
@@ -18,6 +19,37 @@ export default class FileExplorerNoteCount extends Plugin {
 
     vaultHandler = new VaultHandler(this);
 
+    /** compatible with theme that hide root folder */
+    doHiddenRoot = (revert = false) => {
+        if (!this.fileExplorer) {
+            console.error('file-explorer not found');
+            return;
+        }
+        const root = this.fileExplorer.fileItems['/'];
+        const styles = getComputedStyle(root.titleInnerEl);
+        const setup = () => {
+            const shouldHide =
+                styles.display === 'none' ||
+                styles.color === 'rgba(0, 0, 0, 0)';
+            root.titleEl.toggleClass(rootHiddenClass, !revert && shouldHide);
+        };
+        if (styles.display !== '') setup();
+        else {
+            let count = 0;
+            const doId = window.setInterval(() => {
+                if (count > 10) {
+                    console.error('%o styles empty', root.titleInnerEl);
+                    window.clearInterval(doId);
+                } else if (styles.display === '') {
+                    count++;
+                } else {
+                    setup();
+                    window.clearInterval(doId);
+                }
+            }, 100);
+        }
+    };
+
     initialize = (revert = false) => {
         const leaves = this.app.workspace.getLeavesOfType('file-explorer');
         if (leaves.length > 1) console.error('more then one file-explorer');
@@ -26,7 +58,12 @@ export default class FileExplorerNoteCount extends Plugin {
             if (!this.fileExplorer)
                 this.fileExplorer = leaves[0].view as FileExplorer;
             setupCount(this, revert);
+
+            this.doHiddenRoot(revert);
             if (!revert) {
+                this.registerEvent(
+                    this.app.workspace.on('css-change', this.doHiddenRoot),
+                );
                 this.vaultHandler.registerVaultEvent();
                 if (this.settings.showAllNumbers)
                     document.body.addClass('oz-show-all-num');
