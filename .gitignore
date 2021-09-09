@@ -8,8 +8,8 @@ package-lock.json
 
 # build
 *.js.map
-main.js
-styles.css
+/build/*
+!build/.hotreload
 
 # obsidian
 data.json

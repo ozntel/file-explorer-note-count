@@ -1,6 +1,6 @@
 import './styles/folder-count.css';
 
-import FileExplorerNoteCount from 'main';
+import FileExplorerNoteCount from 'fec-main';
 import {
     AbstractFileFilter,
     getParentPath,

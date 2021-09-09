@@ -1,5 +1,5 @@
+import FileExplorerNoteCount from 'fec-main';
 import { updateCount } from 'folder-count';
-import FileExplorerNoteCount from 'main';
 import { getParentPath } from 'misc';
 import { App, debounce, TAbstractFile, Vault } from 'obsidian';
 

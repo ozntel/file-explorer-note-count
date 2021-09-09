@@ -1,7 +1,7 @@
 import { equals } from 'misc';
 import { App, debounce, PluginSettingTab, Setting } from 'obsidian';
 
-import FileExplorerNoteCount from './main';
+import FileExplorerNoteCount from './fec-main';
 
 export interface FENoteCountSettings {
     showAllNumbers: boolean;
