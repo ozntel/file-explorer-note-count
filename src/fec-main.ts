@@ -1,5 +1,6 @@
 import './styles/patch.css';
 
+import { getApi } from '@aidenlx/folder-note-core';
 import {
     AbstractFileFilter,
     rootHiddenClass,
@@ -144,6 +145,14 @@ export default class FileExplorerNoteCount extends Plugin {
         let list = this.settings.filterList;
         return (af) => {
             if (af instanceof TFile) {
+                let api;
+                if (
+                    this.settings.filterFolderNote &&
+                    (api = getApi(this)) &&
+                    !!api.getFolderFromNote(af)
+                ) {
+                    return false;
+                }
                 const { extension: target } = af;
                 // if list is empty, filter nothing
                 if (list.length === 0) return true;

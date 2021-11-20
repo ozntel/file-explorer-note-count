@@ -7,12 +7,14 @@ export interface FENoteCountSettings {
     showAllNumbers: boolean;
     filterList: string[];
     blacklist: boolean;
+    filterFolderNote: boolean;
 }
 
 export const DEFAULT_SETTINGS: FENoteCountSettings = {
     showAllNumbers: false,
     filterList: ['md'],
     blacklist: false,
+    filterFolderNote: true,
 };
 
 export class FENoteCountSettingTab extends PluginSettingTab {
@@ -60,6 +62,26 @@ export class FENoteCountSettingTab extends PluginSettingTab {
                     .onChange((value) => {
                         document.body.toggleClass('oz-show-all-num', value);
                         this.plugin.settings.showAllNumbers = value;
+                        this.plugin.saveSettings();
+                    }),
+            );
+        new Setting(containerEl)
+            .setName('Exclude Folder Note from Counts')
+            .setDesc(
+                createFragment((frag) => {
+                    frag.appendText('Only work with');
+                    frag.createEl('a', {
+                        href: 'https://github.com/aidenlx/folder-note-core',
+                        text: 'Folder Note Core',
+                    });
+                    frag.appendText(' Installed and Enabled');
+                }),
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.filterFolderNote)
+                    .onChange((value) => {
+                        this.plugin.settings.filterFolderNote = value;
                         this.plugin.saveSettings();
                     }),
             );
