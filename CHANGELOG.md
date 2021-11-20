@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/ozntel/file-explorer-note-count/compare/1.1.3...1.2.0) (2021-11-20)
+
+
+### Bug Fixes
+
+* **initialize:** fix file explorer count failed to update when workspace changes ([22546ba](https://github.com/ozntel/file-explorer-note-count/commit/22546ba94f18c1b103785d69cf582d67d80a91f9)), closes [#8](https://github.com/ozntel/file-explorer-note-count/issues/8)
+
+
+### Features
+
+* exclude folder note from counts ([a7083c7](https://github.com/ozntel/file-explorer-note-count/commit/a7083c7159e06214265e8511a47888e0f3e3bf4b)), closes [#7](https://github.com/ozntel/file-explorer-note-count/issues/7)
+
 ## [1.1.3](https://github.com/ozntel/file-explorer-note-count/compare/1.1.2...1.1.3) (2021-06-22)
 
 
