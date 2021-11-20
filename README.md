@@ -18,6 +18,9 @@
 
 <img src="https://github.com/ozntel/file-explorer-note-count/raw/main/images/collapsed-folder-setting.png" />
 
+- You can include/exclude folder note from file counts (excluded by default)
+  - Note: [folder-note-core](https://github.com/aidenlx/folder-note-core) required, install and enable this plugin to take effects
+
 ## Contact
 
 If you have any issue or you have any suggestion, please feel free to reach me out directly using contact page of my website [ozan.pl/contact/](https://www.ozan.pl/contact/) or directly to <me@ozan.pl>.
