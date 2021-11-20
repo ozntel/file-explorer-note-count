@@ -5,6 +5,7 @@ declare module 'obsidian' {
         files: WeakMap<HTMLDivElement, TAbstractFile>;
         getViewType(): string;
         getDisplayText(): string;
+        onClose(): Promise<void>;
     }
 
     export type AFItem = FolderItem | FileItem;

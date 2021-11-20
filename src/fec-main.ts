@@ -6,6 +6,7 @@ import {
     showAllNumbersClass,
     withSubfolderClass,
 } from 'misc';
+import { around } from 'monkey-around';
 import { FileExplorer, Plugin, TFile } from 'obsidian';
 import { VaultHandler } from 'vault-handler';
 
@@ -51,14 +52,30 @@ export default class FileExplorerNoteCount extends Plugin {
     };
 
     initialize = (revert = false) => {
-        const leaves = this.app.workspace.getLeavesOfType('file-explorer');
-        if (leaves.length > 1) console.error('more then one file-explorer');
-        else if (leaves.length < 1) console.error('file-explorer not found');
-        else {
-            if (!this.fileExplorer)
-                this.fileExplorer = leaves[0].view as FileExplorer;
-            setupCount(this, revert);
+        const doWithFileExplorer = (callback: (view: FileExplorer) => void) => {
+            let leaves,
+                count = 0;
+            const tryGetView = () => {
+                leaves = this.app.workspace.getLeavesOfType('file-explorer');
+                if (leaves.length === 0) {
+                    if (count++ > 5)
+                        console.error('failed to get file-explorer');
+                    else {
+                        console.log('file-explorer not found, retrying...');
+                        setTimeout(tryGetView, 500);
+                    }
+                } else {
+                    if (leaves.length > 1)
+                        console.warn('more then one file-explorer');
+                    callback(leaves[0].view as FileExplorer);
+                }
+            };
+            tryGetView();
+        };
+        const getViewHandler = (revert: boolean) => (view: FileExplorer) => {
+            this.fileExplorer = view;
 
+            setupCount(this, revert);
             this.doHiddenRoot(revert);
             if (!revert) {
                 this.registerEvent(
@@ -75,7 +92,28 @@ export default class FileExplorerNoteCount extends Plugin {
                 }
                 document.body.removeClass(showAllNumbersClass);
             }
-        }
+
+            if (!revert) {
+                // when file explorer is closed (workspace changed)
+                // try to update fehanlder with new file explorer instance
+                this.register(
+                    around(view, {
+                        onClose: (next) =>
+                            function (this: FileExplorer) {
+                                setTimeout(
+                                    () =>
+                                        doWithFileExplorer(
+                                            getViewHandler(false),
+                                        ),
+                                    1e3,
+                                );
+                                return next.apply(this);
+                            },
+                    }),
+                );
+            }
+        };
+        doWithFileExplorer(getViewHandler(revert));
     };
 
     async onload() {
