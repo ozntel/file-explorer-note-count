@@ -28,19 +28,19 @@ export default class FileExplorerNoteCount extends Plugin {
             return;
         }
         const root = this.fileExplorer.fileItems['/'];
-        const styles = getComputedStyle(root.titleInnerEl);
+        const styles = getComputedStyle(root.innerEl);
         const setup = () => {
             const shouldHide =
                 styles.display === 'none' ||
                 styles.color === 'rgba(0, 0, 0, 0)';
-            root.titleEl.toggleClass(rootHiddenClass, !revert && shouldHide);
+            root.selfEl.toggleClass(rootHiddenClass, !revert && shouldHide);
         };
         if (styles.display !== '') setup();
         else {
             let count = 0;
             const doId = window.setInterval(() => {
                 if (count > 10) {
-                    console.error('%o styles empty', root.titleInnerEl);
+                    console.error('%o styles empty', root.innerEl);
                     window.clearInterval(doId);
                 } else if (styles.display === '') {
                     count++;

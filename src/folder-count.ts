@@ -72,6 +72,8 @@ export const updateCount = (
 export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
     if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
 
+    console.log(plugin.fileExplorer.fileItems);
+
     iterateItems(plugin.fileExplorer.fileItems, (item: AFItem) => {
         if (!isFolder(item)) return;
         if (revert) removeCount(item);
@@ -82,8 +84,8 @@ export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
 export const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
     // if (item.file.isRoot()) return;
     const count = countFolderChildren(item.file, filter);
-    item.titleEl.dataset['count'] = count.toString();
-    item.titleEl.toggleClass(
+    item.selfEl.dataset['count'] = count.toString();
+    item.selfEl.toggleClass(
         withSubfolderClass,
         Array.isArray(item.file.children) &&
             item.file.children.some((af) => af instanceof TFolder),
@@ -91,6 +93,6 @@ export const setCount = (item: FolderItem, filter: AbstractFileFilter) => {
 };
 
 const removeCount = (item: FolderItem) => {
-    if (item.titleEl.dataset['count']) delete item.titleEl.dataset['count'];
-    item.titleEl.removeClass(withSubfolderClass);
+    if (item.selfEl.dataset['count']) delete item.selfEl.dataset['count'];
+    item.selfEl.removeClass(withSubfolderClass);
 };

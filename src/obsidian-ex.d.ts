@@ -15,16 +15,16 @@ declare module 'obsidian' {
         file: TFile;
         fileExplorer: FileExplorer;
         info: any;
-        titleEl: HTMLDivElement;
-        titleInnerEl: HTMLDivElement;
+        selfEl: HTMLDivElement;
+        innerEl: HTMLDivElement;
     }
 
     export interface FolderItem {
         el: HTMLDivElement;
         fileExplorer: FileExplorer;
         info: any;
-        titleEl: HTMLDivElement;
-        titleInnerEl: HTMLDivElement;
+        selfEl: HTMLDivElement;
+        innerEl: HTMLDivElement;
         file: TFolder;
         children: AFItem[];
         childrenEl: HTMLDivElement;
