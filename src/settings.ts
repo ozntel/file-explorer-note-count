@@ -69,7 +69,7 @@ export class FENoteCountSettingTab extends PluginSettingTab {
             .setName('Exclude Folder Note from Counts')
             .setDesc(
                 createFragment((frag) => {
-                    frag.appendText('Only work with');
+                    frag.appendText('Only work with ');
                     frag.createEl('a', {
                         href: 'https://github.com/aidenlx/folder-note-core',
                         text: 'Folder Note Core',
