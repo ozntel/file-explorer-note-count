@@ -72,8 +72,6 @@ export const updateCount = (
 export const setupCount = (plugin: FileExplorerNoteCount, revert = false) => {
     if (!plugin.fileExplorer) throw new Error('fileExplorer not found');
 
-    console.log(plugin.fileExplorer.fileItems);
-
     iterateItems(plugin.fileExplorer.fileItems, (item: AFItem) => {
         if (!isFolder(item)) return;
         if (revert) removeCount(item);
