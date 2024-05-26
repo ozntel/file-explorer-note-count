@@ -8,7 +8,7 @@
         "eslint": "eslint . --ext .ts,.tsx --fix",
         "dev": "rollup --config rollup.config.js -w",
         "release": "release-it",
-        "build": "rollup --config rollup.config.js --environment BUILD:production"
+        "build": "NODE_ENV=production rollup --config rollup.config.js"
     },
     "keywords": [],
     "author": "",
