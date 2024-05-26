@@ -1,4 +1,4 @@
-import FileExplorerNoteCount from 'fec-main';
+import FileExplorerNoteCount from 'main';
 import { updateCount } from 'folder-count';
 import { getParentPath } from 'misc';
 import { App, debounce, TAbstractFile, Vault } from 'obsidian';
@@ -16,11 +16,7 @@ export class VaultHandler {
         this.plugin = plugin;
     }
 
-    update = debounce(
-        () => updateCount(this.waitingList, this.plugin),
-        500,
-        true,
-    );
+    update = debounce(() => updateCount(this.waitingList, this.plugin), 500, true);
 
     handler = (...args: (string | TAbstractFile)[]) => {
         for (const arg of args) {

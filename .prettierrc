@@ -1,7 +1,12 @@
 {
     "singleQuote": true,
     "tabWidth": 4,
-    "trailingComma": "all",
+    "printWidth": 155,
+    "semi": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "jsxBracketSameLine": true,
     "overrides": [
         {
             "files": ".prettierrc",

@@ -1,23 +1,14 @@
-import {
-    AFItem,
-    FileExplorer,
-    FolderItem,
-    TAbstractFile,
-    TFolder,
-} from 'obsidian';
+import FileExplorerNoteCount from 'main';
+import { AFItem, FileExplorer, FolderItem, TAbstractFile, TFolder } from 'obsidian';
 import { dirname } from 'path-browserify';
 
 export const withSubfolderClass = 'oz-with-subfolder';
 export const showAllNumbersClass = 'oz-show-all-num';
 export const rootHiddenClass = 'oz-root-hidden';
 
-export const isFolder = (item: AFItem): item is FolderItem =>
-    (item as FolderItem).file instanceof TFolder;
+export const isFolder = (item: AFItem): item is FolderItem => (item as FolderItem).file instanceof TFolder;
 
-export const iterateItems = (
-    items: FileExplorer['fileItems'],
-    callback: (item: AFItem) => any,
-): void => {
+export const iterateItems = (items: FileExplorer['fileItems'], callback: (item: AFItem) => any): void => {
     for (const key in items) {
         if (!Object.prototype.hasOwnProperty.call(items, key)) continue;
         callback(items[key]);
@@ -49,4 +40,24 @@ export const isParent = (parent: string, child: string): boolean => {
     if (child === '/') child = '';
     const parentTokens = parent.split('/').filter((i) => i.length);
     return parentTokens.every((t, i) => child.split('/')[i] === t);
+};
+
+// Helper to play with the File Explorer (if exists)
+export const doWithFileExplorer = (plugin: FileExplorerNoteCount, callback: (view: FileExplorer) => void) => {
+    let leaves;
+    let count = 0;
+    const tryGetView = () => {
+        leaves = plugin.app.workspace.getLeavesOfType('file-explorer');
+        if (leaves.length === 0) {
+            if (count++ > 5) console.error('failed to get file-explorer');
+            else {
+                console.log('file-explorer not found, retrying...');
+                setTimeout(tryGetView, 500);
+            }
+        } else {
+            if (leaves.length > 1) console.warn('more then one file-explorer');
+            callback(leaves[0].view as FileExplorer);
+        }
+    };
+    tryGetView();
 };

@@ -1,20 +1,20 @@
 import { equals } from 'misc';
 import { App, debounce, PluginSettingTab, Setting } from 'obsidian';
 
-import FileExplorerNoteCount from './fec-main';
+import FileExplorerNoteCount from './main';
 
 export interface FENoteCountSettings {
     showAllNumbers: boolean;
     filterList: string[];
     blacklist: boolean;
-    filterFolderNote: boolean;
+    addRootFolder: boolean;
 }
 
 export const DEFAULT_SETTINGS: FENoteCountSettings = {
     showAllNumbers: false,
     filterList: ['md'],
     blacklist: false,
-    filterFolderNote: true,
+    addRootFolder: false,
 };
 
 export class FENoteCountSettingTab extends PluginSettingTab {
@@ -27,10 +27,7 @@ export class FENoteCountSettingTab extends PluginSettingTab {
 
     get showOnlyNoteValue(): boolean {
         const { settings } = this.plugin;
-        return (
-            settings.blacklist === DEFAULT_SETTINGS.blacklist &&
-            equals(settings.filterList, DEFAULT_SETTINGS.filterList)
-        );
+        return settings.blacklist === DEFAULT_SETTINGS.blacklist && equals(settings.filterList, DEFAULT_SETTINGS.filterList);
     }
 
     set showOnlyNoteValue(value: boolean) {
@@ -53,66 +50,53 @@ export class FENoteCountSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Show All Numbers')
-            .setDesc(
-                'Turn on this option if you want to see the number of notes even after you expand the collapsed folders',
-            )
+            .setDesc('Turn on this option if you want to see the number of notes even after you expand the collapsed folders')
             .addToggle((toggle) =>
-                toggle
-                    .setValue(this.plugin.settings.showAllNumbers)
-                    .onChange((value) => {
-                        document.body.toggleClass('oz-show-all-num', value);
-                        this.plugin.settings.showAllNumbers = value;
-                        this.plugin.saveSettings();
-                    }),
+                toggle.setValue(this.plugin.settings.showAllNumbers).onChange((value) => {
+                    document.body.toggleClass('oz-show-all-num', value);
+                    this.plugin.settings.showAllNumbers = value;
+                    this.plugin.saveSettings();
+                })
             );
+
         new Setting(containerEl)
-            .setName('Exclude Folder Note from Counts')
+            .setName('Add Root Folder')
             .setDesc(
-                createFragment((frag) => {
-                    frag.appendText('Only work with');
-                    frag.createEl('a', {
-                        href: 'https://github.com/aidenlx/folder-note-core',
-                        text: 'Folder Note Core',
-                    });
-                    frag.appendText(' Installed and Enabled');
-                }),
+                'By default, there is no root folder provided by Obsidian. It is moved to drop-down menu to switch between vaults. ' +
+                    'Enable this option if you want to see root folder and its count in the file explorer'
             )
             .addToggle((toggle) =>
-                toggle
-                    .setValue(this.plugin.settings.filterFolderNote)
-                    .onChange((value) => {
-                        this.plugin.settings.filterFolderNote = value;
-                        this.plugin.saveSettings();
-                    }),
+                toggle.setValue(this.plugin.settings.addRootFolder).onChange((value) => {
+                    this.plugin.settings.addRootFolder = value;
+                    this.plugin.saveSettings();
+                    this.plugin.reloadCount();
+                })
             );
+
         this.filterOpt();
     }
 
     filterOpt(): void {
         new Setting(this.containerEl)
             .setName('Show Only Markdown Notes')
-            .setDesc(
-                'Turn off this option to choose file that should be counted',
-            )
+            .setDesc('Turn off this option to choose file that should be counted')
             .addToggle((toggle) =>
                 toggle.setValue(this.showOnlyNoteValue).onChange((value) => {
                     this.showOnlyNoteValue = value;
                     this.plugin.reloadCount();
                     this.plugin.saveSettings();
                     this.display();
-                }),
+                })
             );
         if (!this.showOnlyNoteValue) {
             new Setting(this.containerEl)
                 .setName('Filter List')
                 .setDesc(
                     createFragment((descEl) => {
-                        descEl.appendText(
-                            'Extension list to include/exclude file during counting',
-                        );
+                        descEl.appendText('Extension list to include/exclude file during counting');
                         descEl.appendChild(document.createElement('br'));
                         descEl.appendText('Separated by comma');
-                    }),
+                    })
                 )
                 .addTextArea((text) => {
                     const onChange = async (value: string) => {
@@ -121,28 +105,20 @@ export class FENoteCountSettingTab extends PluginSettingTab {
                         this.plugin.reloadCount();
                         await this.plugin.saveSettings();
                     };
-                    text.setPlaceholder(
-                        'Leave it empty to count all types of files',
-                    );
-                    text.setValue(
-                        this.plugin.settings.filterList.join(', '),
-                    ).onChange(debounce(onChange, 500, true));
+                    text.setPlaceholder('Leave it empty to count all types of files');
+                    text.setValue(this.plugin.settings.filterList.join(', ')).onChange(debounce(onChange, 500, true));
                     text.inputEl.rows = 2;
                     text.inputEl.cols = 25;
                 });
             new Setting(this.containerEl)
                 .setName('Enable Blacklist')
-                .setDesc(
-                    'Turn on this option to use Filter List to exclude files',
-                )
+                .setDesc('Turn on this option to use Filter List to exclude files')
                 .addToggle((toggle) =>
-                    toggle
-                        .setValue(this.plugin.settings.blacklist)
-                        .onChange((value) => {
-                            this.plugin.settings.blacklist = value;
-                            this.plugin.reloadCount();
-                            this.plugin.saveSettings();
-                        }),
+                    toggle.setValue(this.plugin.settings.blacklist).onChange((value) => {
+                        this.plugin.settings.blacklist = value;
+                        this.plugin.reloadCount();
+                        this.plugin.saveSettings();
+                    })
                 );
         }
     }

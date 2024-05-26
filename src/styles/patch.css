@@ -1,3 +1,7 @@
 .nav-folder-title-content {
     flex-grow: 1;
 }
+
+.oz-explorer-root-folder {
+    margin-top: 15px;
+}

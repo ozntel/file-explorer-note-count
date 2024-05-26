@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
         "baseUrl": "src",
+        "isolatedModules": true,
         "outDir": "",
+        "esModuleInterop": true,
         "inlineSourceMap": true,
         "inlineSources": true,
         "module": "ESNext",
@@ -14,5 +16,6 @@
         "allowSyntheticDefaultImports": true,
         "lib": ["dom", "es5", "scripthost", "ES2020", "DOM.Iterable"]
     },
-    "include": ["src/**/*.ts"]
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": []
 }

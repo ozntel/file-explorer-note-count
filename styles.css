@@ -1,3 +1,11 @@
+.nav-folder-title-content {
+    flex-grow: 1;
+}
+
+.oz-explorer-root-folder {
+    margin-top: 15px;
+}
+
 .nav-folder-title[data-count]::after {
     content: attr(data-count);
     display: inline-block;
@@ -9,20 +17,18 @@
     /* background-color: var(--background-secondary-alt); */
     transition: opacity 100ms ease-in-out;
 }
-.nav-folder-title.oz-root-hidden[data-count]::after {
-    display: none;
+
+.oz-explorer-root-nav-folder-title {
+    display: flex;
 }
 
-body:not(.oz-show-all-num)
-    .nav-folder:not(.is-collapsed)
-    > .nav-folder-title.oz-with-subfolder[data-count]:not([data-path='/'])::after {
+.oz-explorer-root-nav-folder-title[data-count]::after {
+    content: attr(data-count);
+    margin-right: 4px;
+    font-size: calc(100% * 0.8);
+    display: inline-block;
+}
+
+body:not(.oz-show-all-num) .nav-folder:not(.is-collapsed) > .nav-folder-title.oz-with-subfolder[data-count]:not([data-path='/'])::after {
     opacity: 0;
-}
-
-.nav-folder-title[data-count='0']::after {
-    display: none;
-}
-
-.nav-folder-title-content {
-    flex-grow: 1;
 }
