@@ -78,12 +78,12 @@ export default class FileExplorerNoteCount extends Plugin {
             console.error('file-explorer not found');
             return;
         }
-        const root = this.fileExplorer.fileItems['/'];
         if (this.rootFolderEl && !this.settings.addRootFolder) {
             this.rootFolderEl.remove();
             this.rootFolderEl = null;
         }
         // Check if root is provided by Obsidian (it shouldn't be in the new releases)
+        const root = this.fileExplorer?.fileItems?.['/'] ?? null;
         if (!root) {
             // Get the Nav Header
             let explorerHeaderEl = document.querySelector(this.explorerNavHeaderSelector);
