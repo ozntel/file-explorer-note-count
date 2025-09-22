@@ -92,11 +92,14 @@ export default class FileExplorerNoteCount extends Plugin {
                 this.rootFolderEl = explorerHeaderEl.createEl('div', {
                     cls: ['tree-item', 'nav-folder', this.rootFolderClassName],
                 });
-                this.rootFolderEl.innerHTML = `
-                <div class="oz-explorer-root-nav-folder-title" data-path="/">
-                    <div class="tree-item-inner nav-folder-title-content">${this.app.vault.getName()}</div>
-                </div>
-                `;
+                let rootTitle = this.rootFolderEl.createEl('div', {
+                    cls: ['oz-explorer-root-nav-folder-title'],
+                    attr: { 'data-path': '/' },
+                });
+                let titleContent = rootTitle.createEl('div', {
+                    cls: ['tree-item-inner', 'nav-folder-title-content'],
+                });
+                titleContent.textContent = this.app.vault.getName();
             }
         }
     };
